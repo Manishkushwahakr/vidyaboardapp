@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Newton's 2nd Law — F = ma | Class 9 Physics</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Sora:wght@300;400;600;700;800&family=Tiro+Devanagari+Hindi:ital@0;1&display=swap');
+
+  :root {
+    --bg:       #0a0e1a;
+    --panel:    #111827;
+    --card:     #1a2235;
+    --border:   #1e2d45;
+    --accent:   #00d4ff;
+    --force:    #ff6b35;
+    --mass:     #a78bfa;
+    --accel:    #34d399;
+    --text:     #e2e8f0;
+    --muted:    #64748b;
+    --hindi-bg: #1a1a2e;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Sora', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body.hindi {
+    font-family: 'Tiro Devanagari Hindi', serif;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none; z-index: 0;
+  }
+
+  .wrap { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 24px 16px 48px; }
+
+  /* ── LANG TOGGLE ── */
+  .lang-bar {
+    display: flex; justify-content: flex-end; margin-bottom: 18px;
+  }
+  .lang-toggle {
+    display: flex; border-radius: 12px; overflow: hidden;
+    border: 1px solid var(--border); background: var(--card);
+  }
+  .lang-btn {
+    padding: 8px 20px; font-size: 13px; font-weight: 700;
+    border: none; cursor: pointer; transition: all 0.25s;
+    letter-spacing: 0.03em; background: transparent;
+  }
+  .lang-btn.en { font-family: 'Sora', sans-serif; color: var(--muted); }
+  .lang-btn.hi { font-family: 'Tiro Devanagari Hindi', serif; color: var(--muted); font-size: 15px; }
+  .lang-btn.active {
+    background: var(--accent); color: #0a0e1a;
+  }
+
+  /* ── HEADER ── */
+  header {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    margin-bottom: 28px; gap: 16px; flex-wrap: wrap;
+  }
+  .header-left { display: flex; flex-direction: column; gap: 4px; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.3);
+    border-radius: 20px; padding: 4px 12px;
+    font-size: 11px; font-weight: 600; color: var(--accent);
+    letter-spacing: 0.08em; text-transform: uppercase;
+    width: fit-content; margin-bottom: 6px;
+    font-family: 'Sora', sans-serif;
+  }
+  .badge span { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: blink 1.4s infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+  h1 {
+    font-family: 'Space Mono', monospace;
+    font-size: clamp(20px, 4vw, 34px);
+    font-weight: 700; line-height: 1.15;
+    background: linear-gradient(135deg, #fff 0%, var(--accent) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  body.hindi h1 {
+    font-family: 'Tiro Devanagari Hindi', serif;
+    font-size: clamp(20px, 3.5vw, 32px);
+  }
+  .subtitle { font-size: 13px; color: var(--muted); margin-top: 4px; }
+  body.hindi .subtitle { font-family: 'Tiro Devanagari Hindi', serif; font-size: 14px; }
+
+  .class-tag {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 10px 18px; text-align: center; flex-shrink: 0;
+  }
+  .class-tag .lbl { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; font-family: 'Sora', sans-serif; }
+  .class-tag .val { font-family: 'Space Mono', monospace; font-size: 18px; font-weight: 700; color: var(--accent); }
+
+  /* ── FORMULA ── */
+  .formula-strip {
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 28px;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 20px 28px;
+    position: relative; overflow: hidden;
+  }
+  .formula-strip::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--force), var(--mass), var(--accel));
+  }
+  .fvar {
+    font-family: 'Space Mono', monospace;
+    font-size: clamp(28px, 5vw, 48px); font-weight: 700;
+    padding: 0 6px; transition: all 0.3s ease;
+  }
+  .fvar.F { color: var(--force); text-shadow: 0 0 20px rgba(255,107,53,0.5); }
+  .fvar.m { color: var(--mass);  text-shadow: 0 0 20px rgba(167,139,250,0.5); }
+  .fvar.a { color: var(--accel); text-shadow: 0 0 20px rgba(52,211,153,0.5); }
+  .fop { font-family: 'Space Mono', monospace; font-size: clamp(24px,4vw,40px); color: var(--muted); padding: 0 4px; }
+  .fvar.pulse { animation: varPulse 0.4s ease; }
+  @keyframes varPulse { 0%{transform:scale(1)} 50%{transform:scale(1.3)} 100%{transform:scale(1)} }
+
+  /* ── formula subtitle in Hindi ── */
+  .formula-note {
+    text-align: center; font-size: 13px; color: var(--muted);
+    margin-top: -18px; margin-bottom: 22px;
+    font-family: 'Sora', sans-serif;
+  }
+  body.hindi .formula-note { font-family: 'Tiro Devanagari Hindi', serif; font-size: 14px; }
+
+  /* ── SLIDERS ── */
+  .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+  @media(max-width:700px){ .main-grid { grid-template-columns: 1fr; } }
+
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 20px; position: relative; overflow: hidden;
+  }
+  .card-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; margin-bottom: 14px;
+    display: flex; align-items: center; gap: 8px;
+    font-family: 'Sora', sans-serif;
+  }
+  body.hindi .card-label { font-family: 'Tiro Devanagari Hindi', serif; font-size: 14px; letter-spacing: 0; text-transform: none; }
+  .card-label::before { content:''; width:8px; height:8px; border-radius:2px; flex-shrink:0; }
+  .card.force .card-label { color: var(--force); }
+  .card.force .card-label::before { background: var(--force); }
+  .card.mass  .card-label { color: var(--mass); }
+  .card.mass  .card-label::before { background: var(--mass); }
+
+  .slider-row { display: flex; align-items: center; gap: 14px; }
+  input[type=range] {
+    flex: 1; -webkit-appearance: none; height: 6px;
+    border-radius: 3px; outline: none; cursor: pointer;
+  }
+  .card.force input[type=range] { background: linear-gradient(90deg, var(--force) var(--pct,50%), #1e2d45 var(--pct,50%)); }
+  .card.mass  input[type=range] { background: linear-gradient(90deg, var(--mass)  var(--pct,50%), #1e2d45 var(--pct,50%)); }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; width:20px; height:20px; border-radius:50%;
+    cursor:pointer; border:3px solid var(--bg); box-shadow:0 0 8px rgba(0,0,0,.5);
+  }
+  .card.force input[type=range]::-webkit-slider-thumb { background: var(--force); }
+  .card.mass  input[type=range]::-webkit-slider-thumb { background: var(--mass); }
+
+  .slider-val { font-family:'Space Mono',monospace; font-size:22px; font-weight:700; min-width:80px; text-align:right; }
+  .card.force .slider-val { color: var(--force); }
+  .card.mass  .slider-val { color: var(--mass); }
+  .slider-unit { font-size:11px; color:var(--muted); text-align:right; margin-top:2px; font-family:'Sora',sans-serif; }
+  body.hindi .slider-unit { font-family:'Tiro Devanagari Hindi',serif; font-size:12px; }
+
+  /* ── RESULT ── */
+  .result-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 20px 28px; margin-bottom: 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 20px; flex-wrap: wrap; position: relative; overflow: hidden;
+  }
+  .result-card::after {
+    content:''; position:absolute; inset:0;
+    background:radial-gradient(ellipse at 50% 50%,rgba(52,211,153,0.08),transparent 70%);
+    pointer-events:none;
+  }
+  .result-label { font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:4px; font-family:'Sora',sans-serif; }
+  body.hindi .result-label { font-family:'Tiro Devanagari Hindi',serif; font-size:13px; letter-spacing:0; text-transform:none; }
+  .result-val {
+    font-family:'Space Mono',monospace; font-size:clamp(32px,6vw,52px); font-weight:700;
+    color:var(--accel); text-shadow:0 0 30px rgba(52,211,153,0.4); transition:all 0.2s;
+  }
+  .result-formula { font-size:13px; color:var(--muted); margin-top:4px; font-family:'Space Mono',monospace; }
+  .result-right { text-align:right; }
+
+  /* ── SIM ── */
+  .sim-wrap { background:var(--card); border:1px solid var(--border); border-radius:16px; overflow:hidden; margin-bottom:20px; }
+  .sim-header {
+    padding:14px 20px; border-bottom:1px solid var(--border);
+    display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;
+  }
+  .sim-title { font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); font-family:'Sora',sans-serif; }
+  body.hindi .sim-title { font-family:'Tiro Devanagari Hindi',serif; font-size:14px; letter-spacing:0; text-transform:none; }
+  .sim-btns { display:flex; gap:8px; }
+  .btn {
+    padding:7px 16px; border-radius:8px; font-size:12px; font-weight:600;
+    border:none; cursor:pointer; font-family:'Sora',sans-serif; transition:all 0.2s;
+  }
+  body.hindi .btn { font-family:'Tiro Devanagari Hindi',serif; font-size:13px; }
+  .btn-play { background:var(--accel); color:#0a0e1a; }
+  .btn-play:hover { filter:brightness(1.15); transform:translateY(-1px); }
+  .btn-reset { background:transparent; color:var(--muted); border:1px solid var(--border); }
+  .btn-reset:hover { border-color:var(--muted); color:var(--text); }
+  canvas#sim { display:block; width:100%; background:#070b14; }
+
+  /* ── STATS ── */
+  .bottom-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-bottom:20px; }
+  @media(max-width:600px){ .bottom-grid { grid-template-columns:1fr; } }
+  .info-card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:16px; }
+  .info-card h3 { font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:10px; font-family:'Sora',sans-serif; }
+  body.hindi .info-card h3 { font-family:'Tiro Devanagari Hindi',serif; font-size:14px; letter-spacing:0; text-transform:none; }
+  .info-card.law1 h3 { color:var(--force); }
+  .info-card.law2 h3 { color:var(--accel); }
+  .info-card.law3 h3 { color:var(--mass); }
+  .info-card p { font-size:12px; color:var(--muted); line-height:1.7; }
+  body.hindi .info-card p { font-family:'Tiro Devanagari Hindi',serif; font-size:13px; }
+  .info-card .stat { font-family:'Space Mono',monospace; font-size:20px; font-weight:700; margin:8px 0 4px; }
+  .info-card.law1 .stat { color:var(--force); }
+  .info-card.law2 .stat { color:var(--accel); }
+  .info-card.law3 .stat { color:var(--mass); }
+
+  /* ── GRAPH ── */
+  .graph-wrap { background:var(--card); border:1px solid var(--border); border-radius:16px; overflow:hidden; margin-bottom:20px; }
+  .graph-header {
+    padding:14px 20px; border-bottom:1px solid var(--border);
+    font-size:12px; font-weight:600; text-transform:uppercase;
+    letter-spacing:0.1em; color:var(--muted);
+    display:flex; justify-content:space-between; align-items:center;
+    font-family:'Sora',sans-serif;
+  }
+  body.hindi .graph-header { font-family:'Tiro Devanagari Hindi',serif; font-size:14px; letter-spacing:0; text-transform:none; }
+  .graph-tabs { display:flex; gap:6px; }
+  .gtab {
+    padding:4px 10px; border-radius:6px; font-size:11px; font-weight:600;
+    cursor:pointer; border:1px solid var(--border); background:transparent;
+    color:var(--muted); transition:all 0.2s; font-family:'Space Mono',monospace;
+  }
+  .gtab.active { background:var(--accent); color:var(--bg); border-color:var(--accent); }
+  canvas#graph { display:block; width:100%; }
+
+  /* ── KEY POINTS ── */
+  .keypoints { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:20px; }
+  .keypoints h3 { font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--accent); margin-bottom:14px; font-family:'Sora',sans-serif; }
+  body.hindi .keypoints h3 { font-family:'Tiro Devanagari Hindi',serif; font-size:15px; letter-spacing:0; text-transform:none; }
+  .kp-list { display:flex; flex-direction:column; gap:10px; }
+  .kp { display:flex; gap:12px; align-items:flex-start; background:rgba(255,255,255,0.02); border-radius:10px; padding:12px 14px; border:1px solid var(--border); }
+  .kp-num { font-family:'Space Mono',monospace; font-size:12px; font-weight:700; color:var(--accent); background:rgba(0,212,255,0.1); border-radius:6px; padding:2px 8px; flex-shrink:0; margin-top:2px; }
+  .kp-text { font-size:13px; color:var(--text); line-height:1.6; }
+  body.hindi .kp-text { font-family:'Tiro Devanagari Hindi',serif; font-size:14px; line-height:1.8; }
+  .kp-text strong { color:var(--accel); }
+
+  /* ── QUIZ ── */
+  .quiz-wrap { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:20px; margin-bottom:20px; }
+  .quiz-wrap h3 { font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--mass); margin-bottom:16px; font-family:'Sora',sans-serif; }
+  body.hindi .quiz-wrap h3 { font-family:'Tiro Devanagari Hindi',serif; font-size:15px; letter-spacing:0; text-transform:none; }
+  .quiz-q { font-size:14px; color:var(--text); margin-bottom:14px; line-height:1.6; }
+  body.hindi .quiz-q { font-family:'Tiro Devanagari Hindi',serif; font-size:15px; line-height:1.8; }
+  .quiz-options { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  @media(max-width:500px){ .quiz-options { grid-template-columns:1fr; } }
+  .qopt {
+    padding:10px 14px; border-radius:10px; border:1px solid var(--border);
+    background:rgba(255,255,255,0.02); cursor:pointer; font-size:13px;
+    color:var(--muted); transition:all 0.2s; text-align:left;
+    font-family:'Sora',sans-serif;
+  }
+  body.hindi .qopt { font-family:'Tiro Devanagari Hindi',serif; font-size:14px; }
+  .qopt:hover { border-color:var(--mass); color:var(--text); }
+  .qopt.correct { background:rgba(52,211,153,0.15); border-color:var(--accel); color:var(--accel); }
+  .qopt.wrong   { background:rgba(255,107,53,0.15);  border-color:var(--force);  color:var(--force); }
+  .quiz-feedback { margin-top:12px; font-size:13px; padding:10px 14px; border-radius:10px; display:none; }
+  body.hindi .quiz-feedback { font-family:'Tiro Devanagari Hindi',serif; font-size:14px; }
+  .quiz-feedback.show { display:block; }
+  .quiz-feedback.ok  { background:rgba(52,211,153,0.12); color:var(--accel); border:1px solid rgba(52,211,153,0.3); }
+  .quiz-feedback.bad { background:rgba(255,107,53,0.12);  color:var(--force);  border:1px solid rgba(255,107,53,0.3); }
+  .quiz-next { margin-top:12px; display:none; }
+  .quiz-next.show { display:block; }
+
+  footer {
+    margin-top:32px; padding-top:20px; border-top:1px solid var(--border);
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;
+  }
+  footer .fl { font-size:11px; color:var(--muted); font-family:'Sora',sans-serif; }
+  body.hindi footer .fl { font-family:'Tiro Devanagari Hindi',serif; font-size:12px; }
+  footer .fr { font-family:'Space Mono',monospace; font-size:11px; color:var(--muted); }
+  ::-webkit-scrollbar{width:6px} ::-webkit-scrollbar-track{background:var(--bg)} ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- LANG TOGGLE -->
+  <div class="lang-bar">
+    <div class="lang-toggle">
+      <button class="lang-btn en active" onclick="setLang('en')">English</button>
+      <button class="lang-btn hi" onclick="setLang('hi')">हिन्दी</button>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-left">
+      <div class="badge"><span></span> <span data-key="live">Live Simulation</span></div>
+      <h1 data-key="title">Newton's Second Law</h1>
+      <div class="subtitle" data-key="subtitle">NCERT Class 9 Physics · Chapter 9 — Force &amp; Laws of Motion</div>
+    </div>
+    <div class="class-tag">
+      <div class="lbl" data-key="classLbl">Class</div>
+      <div class="val">IX</div>
+    </div>
+  </header>
+
+  <!-- FORMULA -->
+  <div class="formula-strip">
+    <div class="fvar F" id="fF">F</div>
+    <div class="fop">=</div>
+    <div class="fvar m" id="fm">m</div>
+    <div class="fop">×</div>
+    <div class="fvar a" id="fa">a</div>
+  </div>
+  <div class="formula-note" data-key="formulaNote">Force = Mass × Acceleration</div>
+
+  <!-- SLIDERS -->
+  <div class="main-grid">
+    <div class="card force">
+      <div class="card-label" data-key="forceLabel">Force (F)</div>
+      <div class="slider-row">
+        <input type="range" id="slF" min="1" max="100" value="40" oninput="update()"/>
+        <div>
+          <div class="slider-val" id="valF">40</div>
+          <div class="slider-unit" data-key="forceUnit">Newtons (N)</div>
+        </div>
+      </div>
+    </div>
+    <div class="card mass">
+      <div class="card-label" data-key="massLabel">Mass (m)</div>
+      <div class="slider-row">
+        <input type="range" id="slM" min="1" max="50" value="10" oninput="update()"/>
+        <div>
+          <div class="slider-val" id="valM">10</div>
+          <div class="slider-unit" data-key="massUnit">Kilograms (kg)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div class="result-card">
+    <div>
+      <div class="result-label" data-key="accelLabel">Acceleration (a)</div>
+      <div class="result-val" id="valA">4.00</div>
+      <div class="result-formula" data-key="accelFormula">a = F ÷ m</div>
+    </div>
+    <div class="result-right">
+      <div class="result-label" data-key="unitLabel">Unit</div>
+      <div style="font-family:'Space Mono',monospace;font-size:22px;font-weight:700;color:var(--accel)">m/s²</div>
+      <div class="result-formula" style="margin-top:6px" id="eqDisplay">40 ÷ 10 = 4.00</div>
+    </div>
+  </div>
+
+  <!-- SIMULATION -->
+  <div class="sim-wrap">
+    <div class="sim-header">
+      <div class="sim-title" data-key="simTitle">🧪 Virtual Experiment — Force on a Cart</div>
+      <div class="sim-btns">
+        <button class="btn btn-reset" onclick="resetSim()" data-key="resetBtn">↺ Reset</button>
+        <button class="btn btn-play" id="playBtn" onclick="togglePlay()" data-key="playBtn">▶ Launch</button>
+      </div>
+    </div>
+    <canvas id="sim" height="200"></canvas>
+  </div>
+
+  <!-- STATS -->
+  <div class="bottom-grid">
+    <div class="info-card law1">
+      <h3 data-key="stat1Title">⚡ Force</h3>
+      <div class="stat" id="st1">40 N</div>
+      <p data-key="stat1Desc">Applied force pushing the cart forward. Larger force → higher acceleration.</p>
+    </div>
+    <div class="info-card law2">
+      <h3 data-key="stat2Title">🚀 Acceleration</h3>
+      <div class="stat" id="st2">4.00 m/s²</div>
+      <p data-key="stat2Desc">Rate of change of velocity. Directly proportional to force, inversely to mass.</p>
+    </div>
+    <div class="info-card law3">
+      <h3 data-key="stat3Title">⚖️ Mass</h3>
+      <div class="stat" id="st3">10 kg</div>
+      <p data-key="stat3Desc">Resistance to change in motion (inertia). Heavier objects accelerate less.</p>
+    </div>
+  </div>
+
+  <!-- GRAPH -->
+  <div class="graph-wrap">
+    <div class="graph-header">
+      <span data-key="graphTitle">Relationship Graph</span>
+      <div class="graph-tabs">
+        <button class="gtab active" id="tab1" onclick="switchGraph('FA')">F vs a</button>
+        <button class="gtab" id="tab2" onclick="switchGraph('Ma')">m vs a</button>
+      </div>
+    </div>
+    <canvas id="graph" height="220"></canvas>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-wrap">
+    <h3 data-key="quizTitle">📝 Quick Quiz</h3>
+    <div id="quizBody"></div>
+  </div>
+
+  <!-- KEY POINTS -->
+  <div class="keypoints">
+    <h3 data-key="kpTitle">📌 Key Points — NCERT Board Notes</h3>
+    <div class="kp-list" id="kpList"></div>
+  </div>
+
+  <footer>
+    <div class="fl" data-key="footerL">NCERT Smart Board · Class 9 · Physics · Offline Demo</div>
+    <div class="fr">F = ma · Newton's 2nd Law</div>
+  </footer>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════
+// TRANSLATIONS
+// ══════════════════════════════════════════════════════
+const T = {
+  en: {
+    live:        "Live Simulation",
+    title:       "Newton's Second Law",
+    subtitle:    "NCERT Class 9 Physics · Chapter 9 — Force & Laws of Motion",
+    classLbl:    "Class",
+    formulaNote: "Force = Mass × Acceleration",
+    forceLabel:  "Force (F)",
+    forceUnit:   "Newtons (N)",
+    massLabel:   "Mass (m)",
+    massUnit:    "Kilograms (kg)",
+    accelLabel:  "Acceleration (a)",
+    accelFormula:"a = F ÷ m",
+    unitLabel:   "Unit",
+    simTitle:    "🧪 Virtual Experiment — Force on a Cart",
+    resetBtn:    "↺ Reset",
+    playBtn:     "▶ Launch",
+    pauseBtn:    "⏸ Pause",
+    stat1Title:  "⚡ Force",
+    stat1Desc:   "Applied force pushing the cart forward. Larger force → higher acceleration.",
+    stat2Title:  "🚀 Acceleration",
+    stat2Desc:   "Rate of change of velocity. Directly proportional to force, inversely to mass.",
+    stat3Title:  "⚖️ Mass",
+    stat3Desc:   "Resistance to change in motion (inertia). Heavier objects accelerate less.",
+    graphTitle:  "Relationship Graph",
+    quizTitle:   "📝 Quick Quiz",
+    kpTitle:     "📌 Key Points — NCERT Board Notes",
+    footerL:     "NCERT Smart Board · Class 9 · Physics · Offline Demo",
+    startLabel:  "START",
+    forceCanvasLabel: "F",
+    accelCanvasLabel: "a",
+    velCanvasLabel:   "v",
+    quiz: [
+      {
+        q: "A force of 50 N acts on a body of mass 10 kg. What is the acceleration?",
+        opts: ["2 m/s²", "5 m/s²", "500 m/s²", "0.2 m/s²"],
+        ans: 1,
+        ok: "✅ Correct! a = F/m = 50/10 = 5 m/s²",
+        bad: "❌ Wrong. Use a = F/m → 50 ÷ 10 = 5 m/s²"
+      },
+      {
+        q: "If mass is doubled and force is kept the same, what happens to acceleration?",
+        opts: ["Doubles", "Stays same", "Becomes half", "Becomes four times"],
+        ans: 2,
+        ok: "✅ Correct! a = F/m — if m doubles, a becomes half.",
+        bad: "❌ Wrong. a = F/m → doubling m halves a."
+      },
+      {
+        q: "What is the SI unit of Force?",
+        opts: ["Joule", "Newton", "Pascal", "Watt"],
+        ans: 1,
+        ok: "✅ Correct! Force is measured in Newtons (N).",
+        bad: "❌ Wrong. Force is measured in Newtons (N), named after Sir Isaac Newton."
+      }
+    ],
+    keypoints: [
+      { num:"01", html:"<strong>Newton's 2nd Law:</strong> Acceleration is directly proportional to net force and inversely proportional to mass." },
+      { num:"02", html:"<strong>Formula:</strong> F = ma, where F → Newtons (N), m → kg, a → m/s²." },
+      { num:"03", html:"<strong>1 Newton</strong> = force that gives 1 kg mass an acceleration of 1 m/s². So <strong>1 N = 1 kg·m/s²</strong>." },
+      { num:"04", html:"<strong>Inertia & Mass:</strong> Greater mass = greater inertia = more resistance to acceleration." },
+      { num:"05", html:"<strong>Real-life:</strong> A cricket ball bowled fast — large force on small mass gives huge acceleration." },
+    ]
+  },
+  hi: {
+    live:        "लाइव सिमुलेशन",
+    title:       "न्यूटन का द्वितीय नियम",
+    subtitle:    "NCERT कक्षा 9 भौतिकी · अध्याय 9 — बल तथा गति के नियम",
+    classLbl:    "कक्षा",
+    formulaNote: "बल = द्रव्यमान × त्वरण",
+    forceLabel:  "बल (F)",
+    forceUnit:   "न्यूटन (N)",
+    massLabel:   "द्रव्यमान (m)",
+    massUnit:    "किलोग्राम (kg)",
+    accelLabel:  "त्वरण (a)",
+    accelFormula:"a = F ÷ m",
+    unitLabel:   "इकाई",
+    simTitle:    "🧪 आभासी प्रयोग — गाड़ी पर बल",
+    resetBtn:    "↺ रीसेट",
+    playBtn:     "▶ चलाएँ",
+    pauseBtn:    "⏸ रोकें",
+    stat1Title:  "⚡ बल",
+    stat1Desc:   "गाड़ी को आगे धकेलने वाला बल। अधिक बल → अधिक त्वरण।",
+    stat2Title:  "🚀 त्वरण",
+    stat2Desc:   "वेग परिवर्तन की दर। बल के समानुपाती और द्रव्यमान के व्युत्क्रमानुपाती।",
+    stat3Title:  "⚖️ द्रव्यमान",
+    stat3Desc:   "जड़त्व (गति में परिवर्तन का प्रतिरोध)। भारी वस्तु का त्वरण कम होता है।",
+    graphTitle:  "संबंध ग्राफ",
+    quizTitle:   "📝 त्वरित प्रश्नोत्तरी",
+    kpTitle:     "📌 मुख्य बिंदु — NCERT बोर्ड नोट्स",
+    footerL:     "NCERT स्मार्ट बोर्ड · कक्षा 9 · भौतिकी · ऑफलाइन डेमो",
+    startLabel:  "शुरू",
+    forceCanvasLabel: "बल",
+    accelCanvasLabel: "त्वरण",
+    velCanvasLabel:   "वेग",
+    quiz: [
+      {
+        q: "एक 10 kg द्रव्यमान की वस्तु पर 50 N का बल लगाया जाता है। त्वरण क्या होगा?",
+        opts: ["2 m/s²", "5 m/s²", "500 m/s²", "0.2 m/s²"],
+        ans: 1,
+        ok: "✅ सही! a = F/m = 50/10 = 5 m/s²",
+        bad: "❌ गलत। सूत्र का उपयोग करें: a = F/m → 50 ÷ 10 = 5 m/s²"
+      },
+      {
+        q: "यदि द्रव्यमान दोगुना कर दिया जाए और बल समान रहे, तो त्वरण पर क्या प्रभाव पड़ेगा?",
+        opts: ["दोगुना हो जाएगा", "समान रहेगा", "आधा हो जाएगा", "चार गुना हो जाएगा"],
+        ans: 2,
+        ok: "✅ सही! a = F/m — द्रव्यमान दोगुना होने पर त्वरण आधा हो जाता है।",
+        bad: "❌ गलत। a = F/m → m दोगुना होने पर a आधा हो जाता है।"
+      },
+      {
+        q: "बल की SI इकाई क्या है?",
+        opts: ["जूल", "न्यूटन", "पास्कल", "वाट"],
+        ans: 1,
+        ok: "✅ सही! बल को न्यूटन (N) में मापा जाता है।",
+        bad: "❌ गलत। बल को न्यूटन (N) में मापा जाता है।"
+      }
+    ],
+    keypoints: [
+      { num:"01", html:"<strong>न्यूटन का द्वितीय नियम:</strong> त्वरण, लगाए गए बल के समानुपाती और द्रव्यमान के व्युत्क्रमानुपाती होता है।" },
+      { num:"02", html:"<strong>सूत्र:</strong> F = ma, जहाँ F → न्यूटन (N), m → kg, a → m/s²।" },
+      { num:"03", html:"<strong>1 न्यूटन</strong> = वह बल जो 1 kg द्रव्यमान को 1 m/s² का त्वरण देता है। अतः <strong>1 N = 1 kg·m/s²</strong>।" },
+      { num:"04", html:"<strong>जड़त्व और द्रव्यमान:</strong> अधिक द्रव्यमान = अधिक जड़त्व = त्वरण का अधिक प्रतिरोध।" },
+      { num:"05", html:"<strong>वास्तविक उदाहरण:</strong> क्रिकेट की गेंद — छोटे द्रव्यमान पर बड़ा बल लगाने पर बहुत अधिक त्वरण मिलता है।" },
+    ]
+  }
+};
+
+// ══════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════
+let lang = 'en';
+let F = 40, M = 10, A = 4;
+let playing = false, animFrame = null;
+let cartX = 80, cartVel = 0, cartTrail = [];
+let graphMode = 'FA';
+let quizIdx = 0, quizAnswered = false;
+
+const simCanvas   = document.getElementById('sim');
+const simCtx      = simCanvas.getContext('2d');
+const graphCanvas = document.getElementById('graph');
+const graphCtx    = graphCanvas.getContext('2d');
+
+// ══════════════════════════════════════════════════════
+// LANGUAGE SWITCH
+// ══════════════════════════════════════════════════════
+function setLang(l) {
+  lang = l;
+  document.body.classList.toggle('hindi', l === 'hi');
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('.lang-btn.' + (l === 'hi' ? 'hi' : 'en')).classList.add('active');
+
+  // update all data-key elements
+  document.querySelectorAll('[data-key]').forEach(el => {
+    const k = el.getAttribute('data-key');
+    if (T[l][k] !== undefined) el.innerHTML = T[l][k];
+  });
+
+  // play button special case
+  document.getElementById('playBtn').innerHTML = playing ? T[l].pauseBtn : T[l].playBtn;
+
+  renderKeyPoints();
+  renderQuiz();
+  update();
+}
+
+// ══════════════════════════════════════════════════════
+// KEY POINTS
+// ══════════════════════════════════════════════════════
+function renderKeyPoints() {
+  const list = document.getElementById('kpList');
+  list.innerHTML = T[lang].keypoints.map(kp =>
+    `<div class="kp"><div class="kp-num">${kp.num}</div><div class="kp-text">${kp.html}</div></div>`
+  ).join('');
+}
+
+// ══════════════════════════════════════════════════════
+// QUIZ
+// ══════════════════════════════════════════════════════
+function renderQuiz() {
+  quizAnswered = false;
+  const qdata = T[lang].quiz[quizIdx];
+  const body = document.getElementById('quizBody');
+  body.innerHTML = `
+    <div class="quiz-q">${quizIdx + 1}. ${qdata.q}</div>
+    <div class="quiz-options">
+      ${qdata.opts.map((o, i) =>
+        `<button class="qopt" onclick="answerQuiz(${i})">${o}</button>`
+      ).join('')}
+    </div>
+    <div class="quiz-feedback" id="qfeedback"></div>
+    <div class="quiz-next" id="qnext">
+      <button class="btn btn-reset" onclick="nextQuiz()" style="margin-top:4px">
+        ${quizIdx < T[lang].quiz.length - 1 ? (lang === 'hi' ? 'अगला प्रश्न →' : 'Next Question →') : (lang === 'hi' ? '↺ दोबारा खेलें' : '↺ Restart Quiz')}
+      </button>
+    </div>
+  `;
+}
+
+function answerQuiz(i) {
+  if (quizAnswered) return;
+  quizAnswered = true;
+  const qdata = T[lang].quiz[quizIdx];
+  const opts = document.querySelectorAll('.qopt');
+  const fb = document.getElementById('qfeedback');
+  const nx = document.getElementById('qnext');
+  opts.forEach((b, idx) => {
+    if (idx === qdata.ans) b.classList.add('correct');
+    else if (idx === i && i !== qdata.ans) b.classList.add('wrong');
+  });
+  fb.className = 'quiz-feedback show ' + (i === qdata.ans ? 'ok' : 'bad');
+  fb.innerHTML = i === qdata.ans ? qdata.ok : qdata.bad;
+  nx.className = 'quiz-next show';
+}
+
+function nextQuiz() {
+  quizIdx = (quizIdx + 1) % T[lang].quiz.length;
+  renderQuiz();
+}
+
+// ══════════════════════════════════════════════════════
+// UPDATE VALUES
+// ══════════════════════════════════════════════════════
+function update() {
+  F = +document.getElementById('slF').value;
+  M = +document.getElementById('slM').value;
+  A = F / M;
+
+  document.getElementById('valF').textContent = F;
+  document.getElementById('valM').textContent = M;
+  document.getElementById('valA').textContent = A.toFixed(2);
+  document.getElementById('eqDisplay').textContent = `${F} ÷ ${M} = ${A.toFixed(2)}`;
+  document.getElementById('st1').textContent = `${F} N`;
+  document.getElementById('st2').textContent = `${A.toFixed(2)} m/s²`;
+  document.getElementById('st3').textContent = `${M} kg`;
+
+  const pctF = ((F - 1) / 99 * 100).toFixed(1) + '%';
+  const pctM = ((M - 1) / 49 * 100).toFixed(1) + '%';
+  document.getElementById('slF').style.setProperty('--pct', pctF);
+  document.getElementById('slM').style.setProperty('--pct', pctM);
+
+  ['fF','fm','fa'].forEach(id => {
+    const el = document.getElementById(id);
+    el.classList.remove('pulse'); void el.offsetWidth; el.classList.add('pulse');
+  });
+
+  if (!playing) { cartVel = 0; drawSim(); }
+  drawGraph();
+}
+
+// ══════════════════════════════════════════════════════
+// SIMULATION
+// ══════════════════════════════════════════════════════
+function resetSim() {
+  playing = false; cancelAnimationFrame(animFrame);
+  cartX = 80; cartVel = 0; cartTrail = [];
+  document.getElementById('playBtn').innerHTML = T[lang].playBtn;
+  drawSim();
+}
+
+function togglePlay() {
+  if (playing) {
+    playing = false; cancelAnimationFrame(animFrame);
+    document.getElementById('playBtn').innerHTML = T[lang].playBtn;
+  } else {
+    if (cartX > simCanvas.width - 80) { cartX = 80; cartVel = 0; cartTrail = []; }
+    playing = true;
+    document.getElementById('playBtn').innerHTML = T[lang].pauseBtn;
+    animate();
+  }
+}
+
+function animate() {
+  if (!playing) return;
+  const dt = 0.016, scale = 0.3;
+  cartVel += A * dt * scale;
+  cartX += cartVel * 60 * dt;
+  cartTrail.push(cartX);
+  if (cartTrail.length > 120) cartTrail.shift();
+  if (cartX > simCanvas.width - 60) {
+    playing = false;
+    document.getElementById('playBtn').innerHTML = T[lang].playBtn;
+    drawSim(); return;
+  }
+  drawSim();
+  animFrame = requestAnimationFrame(animate);
+}
+
+function drawSim() {
+  const W = simCanvas.width, H = simCanvas.height, ctx = simCtx;
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = '#070b14'; ctx.fillRect(0, 0, W, H);
+
+  // grid
+  ctx.strokeStyle = 'rgba(0,212,255,0.05)'; ctx.lineWidth = 1;
+  for (let x = 0; x < W; x += 40) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+  for (let y = 0; y < H; y += 40) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+
+  const gy = H * 0.72;
+  ctx.strokeStyle = 'rgba(100,116,139,0.4)'; ctx.setLineDash([6,8]); ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(0, gy+28); ctx.lineTo(W, gy+28); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.strokeStyle = 'rgba(100,116,139,0.2)'; ctx.lineWidth = 1;
+  for (let x = 0; x < W; x += 20) { ctx.beginPath(); ctx.moveTo(x,gy+28); ctx.lineTo(x-14,gy+42); ctx.stroke(); }
+
+  // trail
+  cartTrail.forEach((tx, i) => {
+    const alpha = i / cartTrail.length * 0.6, r = i / cartTrail.length * 4;
+    ctx.fillStyle = `rgba(52,211,153,${alpha})`;
+    ctx.beginPath(); ctx.arc(tx, gy+10, r, 0, Math.PI*2); ctx.fill();
+  });
+
+  const cx = cartX, cy = gy - 10;
+  const cw = Math.max(60, 20 + M*2.2), ch = Math.max(28, 14 + M*0.8);
+
+  ctx.fillStyle = 'rgba(0,0,0,0.3)';
+  ctx.beginPath(); ctx.ellipse(cx, gy+28, cw/1.4, 8, 0, 0, Math.PI*2); ctx.fill();
+
+  ctx.save();
+  ctx.shadowColor = 'rgba(167,139,250,0.4)'; ctx.shadowBlur = 12;
+  ctx.fillStyle = '#1a2235'; ctx.strokeStyle = '#a78bfa'; ctx.lineWidth = 2;
+  const rx = cx - cw/2, ry = cy - ch;
+  roundRect(ctx, rx, ry, cw, ch, 8); ctx.fill(); ctx.stroke();
+  ctx.restore();
+
+  ctx.fillStyle = '#a78bfa';
+  ctx.font = `bold ${Math.min(14,10+M/5)}px 'Space Mono', monospace`;
+  ctx.textAlign = 'center';
+  ctx.fillText(`${M} kg`, cx, cy - ch/2 + 5);
+
+  [rx+14, rx+cw-14].forEach(wx => {
+    ctx.beginPath(); ctx.arc(wx, cy+2, 10, 0, Math.PI*2);
+    ctx.fillStyle = '#0f172a'; ctx.fill();
+    ctx.strokeStyle = '#64748b'; ctx.lineWidth = 2; ctx.stroke();
+    ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 1.5;
+    for (let s = 0; s < 4; s++) {
+      const ang = (s/4)*Math.PI*2 + (cartX*0.05);
+      ctx.beginPath(); ctx.moveTo(wx, cy+2); ctx.lineTo(wx+Math.cos(ang)*8, cy+2+Math.sin(ang)*8); ctx.stroke();
+    }
+    ctx.beginPath(); ctx.arc(wx, cy+2, 3, 0, Math.PI*2); ctx.fillStyle = '#a78bfa'; ctx.fill();
+  });
+
+  if (playing || cartVel > 0) {
+    const arrowLen = Math.min(F*1.2, W*0.35);
+    const ax = rx - 8, ay = cy - ch/2;
+    ctx.save();
+    ctx.strokeStyle = '#ff6b35'; ctx.fillStyle = '#ff6b35'; ctx.lineWidth = 3;
+    ctx.shadowColor = 'rgba(255,107,53,0.6)'; ctx.shadowBlur = 10;
+    ctx.beginPath(); ctx.moveTo(ax - arrowLen, ay); ctx.lineTo(ax - 8, ay); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(ax-14, ay-7); ctx.lineTo(ax-14, ay+7); ctx.closePath(); ctx.fill();
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = '#ff6b35'; ctx.font = "bold 12px 'Space Mono',monospace"; ctx.textAlign = 'center';
+    ctx.fillText(`F = ${F}N`, ax - arrowLen/2, ay - 10);
+    ctx.restore();
+  }
+
+  if (playing) {
+    ctx.fillStyle = 'rgba(52,211,153,0.9)';
+    ctx.font = "bold 12px 'Space Mono',monospace"; ctx.textAlign = 'right';
+    ctx.fillText(`a = ${A.toFixed(2)} m/s²`, W-16, 24);
+    ctx.fillStyle = 'rgba(255,255,255,0.5)'; ctx.font = "11px 'Sora',sans-serif";
+    ctx.fillText(`v = ${(cartVel*60*0.3).toFixed(2)} m/s`, W-16, 42);
+  }
+
+  ctx.strokeStyle = 'rgba(0,212,255,0.3)'; ctx.lineWidth = 1; ctx.setLineDash([4,4]);
+  ctx.beginPath(); ctx.moveTo(80, gy-40); ctx.lineTo(80, gy+28); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = 'rgba(0,212,255,0.5)'; ctx.font = "10px 'Space Mono',monospace"; ctx.textAlign = 'center';
+  ctx.fillText(T[lang].startLabel, 80, gy-44);
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x+r, y); ctx.lineTo(x+w-r, y); ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r); ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  ctx.lineTo(x+r,y+h); ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+  ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y); ctx.closePath();
+}
+
+// ══════════════════════════════════════════════════════
+// GRAPH
+// ══════════════════════════════════════════════════════
+function switchGraph(mode) {
+  graphMode = mode;
+  document.getElementById('tab1').classList.toggle('active', mode==='FA');
+  document.getElementById('tab2').classList.toggle('active', mode==='Ma');
+  drawGraph();
+}
+
+function drawGraph() {
+  const W = graphCanvas.width, H = graphCanvas.height, ctx = graphCtx;
+  ctx.clearRect(0,0,W,H);
+  const pad = {l:52,r:24,t:20,b:44};
+  const gW = W-pad.l-pad.r, gH = H-pad.t-pad.b;
+  ctx.fillStyle = '#070b14'; ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle = 'rgba(0,212,255,0.06)'; ctx.lineWidth = 1;
+  for (let i=0;i<=5;i++) {
+    const y = pad.t+gH-(i/5)*gH; ctx.beginPath(); ctx.moveTo(pad.l,y); ctx.lineTo(pad.l+gW,y); ctx.stroke();
+    const x = pad.l+(i/5)*gW; ctx.beginPath(); ctx.moveTo(x,pad.t); ctx.lineTo(x,pad.t+gH); ctx.stroke();
+  }
+  ctx.strokeStyle = 'rgba(100,116,139,0.6)'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(pad.l,pad.t); ctx.lineTo(pad.l,pad.t+gH); ctx.lineTo(pad.l+gW,pad.t+gH); ctx.stroke();
+
+  let lineColor, pts=[], xLabel, yLabel, currentX, currentY;
+  if (graphMode === 'FA') {
+    lineColor = '#ff6b35'; xLabel = 'F (N)'; yLabel = 'a (m/s²)';
+    const maxA = 100/M; pts = [];
+    for (let f=0;f<=100;f+=2) pts.push({x:f/100, y:(f/M)/maxA});
+    currentX = F/100; currentY = A/maxA;
+  } else {
+    lineColor = '#a78bfa'; xLabel = 'm (kg)'; yLabel = 'a (m/s²)';
+    const maxA = F/1; pts = [];
+    for (let m=1;m<=50;m++) pts.push({x:(m-1)/49, y:(F/m)/maxA});
+    currentX = (M-1)/49; currentY = A/maxA;
+  }
+
+  ctx.beginPath(); ctx.moveTo(pad.l, pad.t+gH);
+  pts.forEach(p => ctx.lineTo(pad.l+p.x*gW, pad.t+gH-p.y*gH));
+  ctx.lineTo(pad.l+gW, pad.t+gH); ctx.closePath();
+  ctx.fillStyle = graphMode==='FA' ? 'rgba(255,107,53,0.1)' : 'rgba(167,139,250,0.1)'; ctx.fill();
+
+  ctx.strokeStyle = lineColor; ctx.lineWidth = 2.5; ctx.shadowColor = lineColor; ctx.shadowBlur = 6;
+  ctx.beginPath();
+  pts.forEach((p,i) => { const px=pad.l+p.x*gW,py=pad.t+gH-p.y*gH; i===0?ctx.moveTo(px,py):ctx.lineTo(px,py); });
+  ctx.stroke(); ctx.shadowBlur = 0;
+
+  const cpx = pad.l+currentX*gW, cpy = pad.t+gH-currentY*gH;
+  ctx.beginPath(); ctx.arc(cpx,cpy,6,0,Math.PI*2);
+  ctx.fillStyle = lineColor; ctx.shadowColor = lineColor; ctx.shadowBlur = 12; ctx.fill(); ctx.shadowBlur = 0;
+
+  ctx.strokeStyle = 'rgba(255,255,255,0.15)'; ctx.lineWidth=1; ctx.setLineDash([4,4]);
+  ctx.beginPath(); ctx.moveTo(cpx,cpy); ctx.lineTo(cpx,pad.t+gH); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(cpx,cpy); ctx.lineTo(pad.l,cpy); ctx.stroke();
+  ctx.setLineDash([]);
+
+  ctx.fillStyle = 'rgba(100,116,139,0.9)'; ctx.font = "11px 'Space Mono',monospace"; ctx.textAlign = 'center';
+  ctx.fillText(xLabel, pad.l+gW/2, H-8);
+  ctx.save(); ctx.translate(14, pad.t+gH/2); ctx.rotate(-Math.PI/2); ctx.fillText(yLabel, 0, 0); ctx.restore();
+
+  ctx.fillStyle = 'rgba(255,255,255,0.4)'; ctx.font = "bold 11px 'Space Mono',monospace"; ctx.textAlign = 'right';
+  const titleText = graphMode==='FA' ? `a ∝ F  (m = ${M} kg)` : `a ∝ 1/m  (F = ${F} N)`;
+  ctx.fillText(titleText, pad.l+gW, pad.t+14);
+}
+
+// ══════════════════════════════════════════════════════
+// RESIZE
+// ══════════════════════════════════════════════════════
+function resizeCanvases() {
+  simCanvas.width = simCanvas.offsetWidth;
+  graphCanvas.width = graphCanvas.offsetWidth;
+  drawSim(); drawGraph();
+}
+window.addEventListener('resize', resizeCanvases);
+
+// ══════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════
+renderKeyPoints();
+renderQuiz();
+update();
+setTimeout(resizeCanvases, 100);
+</script>
+</body>
+</html>
